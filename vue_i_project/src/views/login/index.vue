@@ -79,7 +79,7 @@
                                 this.$router.push('/')
                             }else{
                                 this.$notify.error({
-                                    title:'错误'
+                                    title:'错误',
                                     message:'登录失败'
                                 })
                             }
