@@ -1,20 +1,12 @@
-from django.views.generic import View
 
-class ServiceDetailView(View):
-
-    def get(self, request, service_id, *args, **kwargs):
-        """ 这个是获取单个数据 """
-        pass
+from interface_app.forms.service_form import ServiceForm
+from interface_app.libs.response import ErrorCode
+from interface_app.models.service import Service
+from interface_app.views.base.base_list import BaseListView
 
 
-    def put(self, request, service_id, *args, **kwargs):
-        """ 这个是全量修改数据 """
-        pass
+class ServiceListView(BaseListView):
 
-    def patch(self, request, service_id, *args, **kwargs):
-        """ 这个是部分修改数据 """
-        pass
-
-    def delete(self, request, service_id, *args, **kwargs):
-        """ 这个是删除数据 """
-        pass
+    module = Service
+    form = ServiceForm
+    code = ErrorCode.service

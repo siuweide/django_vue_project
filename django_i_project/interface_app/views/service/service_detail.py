@@ -1,11 +1,13 @@
-from django.views.generic import View
 
-class ServiceListView(View):
+from interface_app.forms.service_form import ServiceForm
 
-    def get(self, request, *args, **kwargs):
-        """ 这个是获取所有数据 """
-        pass
+from interface_app.libs.response import  ErrorCode
+from interface_app.models.service import Service
+from interface_app.views.base.base_detail import BaseDetailView
 
-    def post(self, request, *args, **kwargs):
-        """ 这个是创建数据 """
-        pass
+
+class ServiceDetailView(BaseDetailView):
+
+    module = Service
+    form = ServiceForm
+    code = ErrorCode.service

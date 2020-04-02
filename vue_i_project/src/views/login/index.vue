@@ -73,7 +73,17 @@
                 this.$refs.loginForm.validate(valid => {
                     if (valid) {
                         // this.loading = true
-                        login(this.loginForm.username, this.loginForm.password)
+                        login(this.loginForm.username, this.loginForm.password).then(data => {
+                            let success = data.data.success;
+                            if (success) {
+                                this.$router.push('/')
+                            }else{
+                                this.$notify.error({
+                                    title:'错误'
+                                    message:'登录失败'
+                                })
+                            }
+                        })
                     } else {
                         console.log('error submit!!')
                         return false

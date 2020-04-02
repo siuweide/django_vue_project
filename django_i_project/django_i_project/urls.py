@@ -17,16 +17,23 @@ from django.contrib import admin
 from django.urls import path
 
 from interface_app.views import user_views
-from interface_app.views.service.service_detail import ServiceListView
-from interface_app.views.service.service_list import ServiceDetailView
+from interface_app.views.service.service_detail import ServiceDetailView
+from interface_app.views.service.service_list import ServiceListView
+from interface_app.views.task.task_detail import TaskDetailViews
+from interface_app.views.task.task_list import TaskListViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('user/login/', user_views.user_login),
-    path('user/register/', user_views.user_register),
-    path('user/logout/', user_views.user_logout),
-    path('user/info/', user_views.get_user_info),
+    path('api/user/login/', user_views.user_login),
+    path('api/user/register/', user_views.user_register),
+    path('api/user/logout/', user_views.user_logout),
+    path('api/user/info/', user_views.get_user_info),
 
+    # 服务接口
     path('api/services/', ServiceListView.as_view()),
-    path('api/service/<int:service_id>/', ServiceDetailView.as_view())
+    path('api/service/<int:base_id>/', ServiceDetailView.as_view()),
+
+    # 任务接口
+    path('api/tasks/', TaskListViews.as_view()),
+    path('api/task/<int:base_id>/', TaskDetailViews.as_view()),
 ]
