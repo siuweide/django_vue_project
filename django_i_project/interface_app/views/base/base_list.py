@@ -1,6 +1,7 @@
 import json
 
-from django.core.management.commands.diffsettings import module_to_dict
+from django.forms import model_to_dict
+
 from django.views.generic import View
 
 from interface_app.forms.service_form import ServiceForm
@@ -18,7 +19,7 @@ class BaseListView(View):
         service = self.model.objects.all()
         ret = []
         for s in service:
-            t = module_to_dict(s)
+            t = model_to_dict(s)
             ret.append(t)
         return response_success(ret)
 
@@ -35,6 +36,6 @@ class BaseListView(View):
         # service = self.module.objects.create(name=name, description=description)
         service = self.model.objects.create(**form.cleaned_data)
         if service:
-            return response_success(module_to_dict(service))
+            return response_success(model_to_dict(service))
         else:
             return response_failed(code=self.code, message='创建服务失败')

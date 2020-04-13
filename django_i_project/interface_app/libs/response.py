@@ -16,7 +16,7 @@ def common_response(success, data, error_code, error_message):
             "message": error_message
         }
     }
-    return JsonResponse(response, json_dumps_params={'ensure_ascii':False}, safe=False)
+    return JsonResponse(response, safe=False)
 
 # 这两个是快捷方式
 

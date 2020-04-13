@@ -1,6 +1,6 @@
 import json
 
-from django.core.management.commands.diffsettings import module_to_dict
+from django.forms import model_to_dict
 from django.views.generic import View
 from interface_app.forms.service_form import ServiceForm
 
@@ -19,13 +19,13 @@ class BaseDetailView(View):
         service = self.model.objects.filter(pk=base_id).first()
         if not service:
             return response_failed(code=self.code, message='数据不存在')
-        return response_success(module_to_dict(service))
+        return response_success(model_to_dict(service))
 
     def put(self, request, base_id, *args, **kwargs):
         """ 这个是全量修改数据 """
         body = request.body
         data = json.loads(body, encoding='utf-8')
-        form = self.model(data)
+        form = self.form(data)
         if not form.is_valid():
             return response_failed()
 
@@ -33,10 +33,11 @@ class BaseDetailView(View):
         if not service:
             return response_failed(code=self.code, message='数据不存在')
 
-        service = self.model.objects.filter(pk=base_id).update(**form.cleaned_data)
+        self.model.objects.filter(pk=base_id).update(**form.cleaned_data)
+        service = self.model.objects.filter(pk=base_id).first()
         if not service:
             return response_failed(code=self.code, message='修改数据失败')
-        return response_success(module_to_dict(service))
+        return response_success(model_to_dict(service))
 
     def patch(self, request, service_id, *args, **kwargs):
         """ 这个是部分修改数据 """
