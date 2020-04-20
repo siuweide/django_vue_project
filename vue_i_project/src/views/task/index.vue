@@ -3,7 +3,7 @@
         <el-button @click="openAddTask">创建任务</el-button>
 
       <div class="task-list">
-        <el-card class="task-card" v-for="item in taskList">
+        <el-card class="task-card" v-for="item in taskList" :key="item.id">
           <div slot="header" class="task-card-header">
 
             <div>

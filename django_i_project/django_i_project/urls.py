@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path
 
 from interface_app.views import user_views
+from interface_app.views.interface.interface_detail import InterfaceDetailView
+from interface_app.views.interface.interface_list import InterfaceListView
 from interface_app.views.service.service_detail import ServiceDetailView
 from interface_app.views.service.service_list import ServiceListView
 from interface_app.views.task.task_detail import TaskDetailViews
@@ -36,4 +38,8 @@ urlpatterns = [
     # 任务接口
     path('api/tasks/', TaskListViews.as_view()),
     path('api/task/<int:base_id>/', TaskDetailViews.as_view()),
+
+    # 接口
+    path('api/interfaces/', InterfaceListView.as_view()),
+    path('api/interface/<int:base_id>/', InterfaceDetailView.as_view()),
 ]

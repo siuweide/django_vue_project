@@ -22,8 +22,8 @@ export default new Router({
               component: () => import('../views/service/index.vue'),
           },
           {
-              path: '/',
-              name: '/',
+              path: '',
+              name: 'service',
               component: () => import('../views/service/index.vue'),
           },
       ]

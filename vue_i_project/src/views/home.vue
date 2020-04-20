@@ -69,20 +69,25 @@
                         this.logoutUser();
                         break;
                     case "service":
-                        this.$router.push('service');
+                        this.$router.push('/service');
                         break;
                     case "interface":
-                        this.$router.push('interface');
+                        this.$router.push('/interface');
                         break;
                     case "task":
-                        this.$router.push('task');
+                        this.$router.push('/task');
                         break;
                 }
           }
         },
         created() {
-            this.activeIndex = this.menu
+            this.activeIndex = this.menu;
         },
+        watch: {
+            menu: function() {
+                this.activeIndex = this.menu;
+            }
+        }
     }
 </script>
 
