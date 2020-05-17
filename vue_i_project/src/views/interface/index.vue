@@ -25,7 +25,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
                 <el-button
-                    size="mini" >编辑
+                    size="mini" @click="openEditModel">编辑
                 </el-button>
                 <el-button
                     @click="deleteInterfaceFun(scope.row.id)"
@@ -35,23 +35,145 @@
             </template>
           </el-table-column>
       </el-table>
+
+      <el-dialog
+        title="新建接口"
+        :visible.sync="addDialogVisible"
+        width="40%">
+        <el-form :model="addForm" :rules="rules" ref="addRuleForm" label-width="60px" class="demo-ruleForm">
+          <el-form-item label="名称" prop="name">
+            <el-input v-model="addForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="addForm.description"></el-input>
+          </el-form-item>
+          <el-form-item label="内容" prop="context">
+            <editor v-model="addForm.context" @init="editorInit" lang="json" theme="chrome" width="500" height="100">
+            </editor>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="addDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="saveAddInterface">确 定</el-button>
+        </span>
+      </el-dialog>
+
+      <el-dialog
+        title="编辑接口"
+        :visible.sync="editDialogVisible"
+        width="40%">
+        <el-form :model="editForm" :rules="rules" ref="editRuleForm" label-width="60px" class="demo-ruleForm">
+          <el-form-item label="名称" prop="name">
+            <el-input v-model="editForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="editForm.description"></el-input>
+          </el-form-item>
+          <el-form-item label="内容" prop="context">
+            <editor v-model="editForm.context" @init="editorInit" lang="json" theme="chrome" width="500" height="100">
+            </editor>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="editDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="saveEditInterface">确 定</el-button>
+        </span>
+      </el-dialog>
+
     </div>
 </template>
 
 <script>
-  import {deleteInterface, getInterfaces} from "../../../request/interface";
+  import {deleteInterface, getInterfaces, addInterface} from "../../../request/interface";
 
     export default {
         name: "index",
+        components: {
+            editor: require('vue2-ace-editor'),
+        },
         data(){
             return {
+                addDialogVisible: false,
+                editDialogVisible: false,
                 serviceId: 0,
                 interfaces: [],
+
+                context: "{}",
+
+                addForm: {
+                    name: "",
+                    description: "",
+                    context: "{}",
+                    service_id: "",
+                },
+                editForm: {
+                    id: "",
+                    name: "",
+                    description: "",
+                    context: "",
+                    service_id: "",
+                },
+                rules: {
+                    name: [
+                        { required: true, message: '请输入名称', trigger: 'blur' },
+                    ],
+                    description: [
+                        { required: true, message: '请输入描述', trigger: 'blur' },
+                    ],
+                    context: [
+                        { required: true, message: '请输入内容', trigger: 'blur' },
+                    ],
+                }
             }
         },
         methods: {
-            openAddModel(){
+            editorInit: function () {
+                require('brace/ext/language_tools') //language extension prerequsite...
+                require('brace/mode/html')
+                require('brace/mode/json')    //language
+                require('brace/mode/less')
+                require('brace/theme/chrome')
+                require('brace/snippets/javascript') //snippet
+            },
+            saveAddInterface() {
+                this.$refs.addRuleForm.validate((valid) => {
+                    if (valid) {
+                        let req = JSON.parse(JSON.stringify(this.addForm))
+                        req.context = JSON.parse(req.context)
+                        req.service_id = this.serviceId;
+                        addInterface(req).then(data => {
+                            let success = data.data.success;
+                            if (success) {
+                                this.getInterfacesFun();
+                                this.addDialogVisible = false;
+                            } else {
+                                this.$notify.error({
+                                    title: '错误',
+                                    message: '请求失败'
+                                });
+                            }
+                        })
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            saveEditInterface() {
 
+            },
+            openAddModel(){
+                let context = {
+                    "method": "get",
+                     "url": "",
+                     "params":{},
+                     "assert":{}
+                };
+                this.addForm.context = JSON.stringify(context, null, 4)
+                this.addDialogVisible = true
+            },
+            openEditModel(){
+                this.editDialogVisible = true
             },
             deleteInterfaceFun(interfaceId){
             this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {

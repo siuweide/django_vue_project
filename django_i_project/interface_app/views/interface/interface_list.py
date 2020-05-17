@@ -11,15 +11,15 @@ class InterfaceListView(BaseListView):
 
     module = Interface
     form = InterfaceForm
-    code = ErrorCode.service
+    code = ErrorCode.common
 
     def get(self, request, *args, **kwargs):
 
         """ 这个是获取某个服务下的所有接口 """
         service_id = request.GET.get('service_id', 0)
-        interface = self.module.objects.filter(service_id=service_id)
+        interfaces = self.module.objects.filter(service_id=service_id)
         ret = []
-        for s in interface:
+        for s in interfaces:
             # t = dict()
             # t['id'] = s.id
             # t['name'] = s.name
@@ -38,15 +38,24 @@ class InterfaceListView(BaseListView):
         if 'context' not in data:
             return response_failed()
 
-        data['context'] = json.dumps(data['context'], encoding='utf-8')
+        data['context'] = json.dumps(data['context'])
+        print(data)
         form = self.form(data)
         if not form.is_valid():
             return response_failed()
 
+        name = form.cleaned_data['name']
+        print('name------------->', name, type(name))
+        description = form.cleaned_data['description']
+        print('description------------->', description, type(description))
+        service_id = form.cleaned_data['service_id']
+        print('service_id------------->', service_id, type(service_id))
+        context = json.loads(form.cleaned_data['context'])
+        print('context------------->',context,type(context))
         interface = self.model.objects.create(**form.cleaned_data)
-        if interface:
+        if not interface:
+            return response_failed(code=self.code, message='创建服务失败')
+        else:
             ret = model_to_dict(interface)
             ret['context'] = json.loads(ret['context'], encoding='utf-8')
             return response_success(ret)
-        else:
-            return response_failed(code=self.code, message='创建服务失败')
