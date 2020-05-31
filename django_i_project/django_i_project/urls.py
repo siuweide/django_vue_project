@@ -23,6 +23,8 @@ from interface_app.views.service.service_detail import ServiceDetailView
 from interface_app.views.service.service_list import ServiceListView
 from interface_app.views.task.task_detail import TaskDetailViews
 from interface_app.views.task.task_list import TaskListViews
+from interface_app.views.task_interface.task_interface_detail import TaskInterfaceDetailView
+from interface_app.views.task_interface.task_interface_list import TaskInterfaceListViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,4 +44,8 @@ urlpatterns = [
     # 接口
     path('api/interfaces/', InterfaceListView.as_view()),
     path('api/interface/<int:base_id>/', InterfaceDetailView.as_view()),
+
+    # 任务接口
+    path('api/task_interfaces/', TaskInterfaceListViews.as_view()),
+    path('api/task_interface/<int:base_id>/', TaskInterfaceDetailView.as_view()),
 ]

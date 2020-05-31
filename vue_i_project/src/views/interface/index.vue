@@ -25,7 +25,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
                 <el-button
-                    size="mini" @click="openEditModel">编辑
+                    size="mini" @click="openEditModel(scope.row)">编辑
                 </el-button>
                 <el-button
                     @click="deleteInterfaceFun(scope.row.id)"
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-  import {deleteInterface, getInterfaces, addInterface} from "../../../request/interface";
+  import {deleteInterface, getInterfaces, addInterface, updateInterface} from "../../../request/interface";
 
     export default {
         name: "index",
@@ -160,7 +160,28 @@
                 });
             },
             saveEditInterface() {
+                this.$refs.editRuleForm.validate((valid) => {
+                    if (valid) {
+                        let req = JSON.parse(JSON.stringify(this.editForm))
+                        req.context = JSON.parse(req.context)
 
+                        updateInterface(req.id, req).then(data => {
+                            let success = data.data.success;
+                            if (success) {
+                                this.getInterfacesFun();
+                                this.editDialogVisible = false;
+                            } else {
+                                this.$notify.error({
+                                    title: '错误',
+                                    message: '请求失败'
+                                });
+                            }
+                        })
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
             },
             openAddModel(){
                 let context = {
@@ -172,7 +193,12 @@
                 this.addForm.context = JSON.stringify(context, null, 4)
                 this.addDialogVisible = true
             },
-            openEditModel(){
+            openEditModel(data){
+                this.editForm.id = data.id;
+                this.editForm.name = data.name;
+                this.editForm.description = data.description;
+                this.editForm.service_id = data.service_id;
+                this.editForm.context = JSON.stringify(data.context);
                 this.editDialogVisible = true
             },
             deleteInterfaceFun(interfaceId){

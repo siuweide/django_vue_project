@@ -13,12 +13,12 @@ class InterfaceDetailView(BaseDetailView):
 
     module = Interface
     form = InterfaceForm
-    code = ErrorCode.service
+    code = ErrorCode.common
 
     def get(self, request, base_id, *args, **kwargs):
 
         """ 这个是获取单个数据 """
-        interface = self.model.objects.filter(pk=base_id).first()
+        interface = self.module.objects.filter(pk=base_id).first()
         if not interface:
             return response_failed(code=self.code, message='数据不存在')
         ret = model_to_dict(interface)
@@ -32,26 +32,27 @@ class InterfaceDetailView(BaseDetailView):
 
         if 'context' not in data:
             return response_failed()
-        data['context'] = json.dumps(data['context'], encoding='utf-8')
+        data['context'] = json.dumps(data['context'])
 
         form = self.form(data)
         if not form.is_valid():
             return response_failed()
 
-        interface = self.model.objects.filter(pk=base_id).first()
+        interface = self.module.objects.filter(id=base_id).first()
         if not interface:
             return response_failed(code=self.code, message='数据不存在')
 
-        self.model.objects.filter(pk=base_id).update(**form.cleaned_data)
-        interface = self.model.objects.filter(pk=base_id).first()
-        if not interface:
-            return response_failed(code=self.code, message='修改数据失败')
-        return response_success(model_to_dict(interface))
+        self.module.objects.filter(id=base_id).update(**form.cleaned_data)
+        interface = self.module.objects.filter(id=base_id).first()
+
+        ret = model_to_dict(interface)
+        ret['context'] = json.loads(ret['context'], encoding='utf-8')
+        return response_success(ret)
 
 
     def delete(self, request, base_id, *args, **kwargs):
         """ 这个是删除数据 """
-        interface = self.model.objects.filter(pk=base_id)
+        interface = self.module.objects.filter(id=base_id)
         if not interface:
             return response_failed(code=self.code, message='数据不存在')
         interface.delete()

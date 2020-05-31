@@ -39,20 +39,15 @@ class InterfaceListView(BaseListView):
             return response_failed()
 
         data['context'] = json.dumps(data['context'])
-        print(data)
         form = self.form(data)
         if not form.is_valid():
             return response_failed()
 
-        name = form.cleaned_data['name']
-        print('name------------->', name, type(name))
-        description = form.cleaned_data['description']
-        print('description------------->', description, type(description))
-        service_id = form.cleaned_data['service_id']
-        print('service_id------------->', service_id, type(service_id))
-        context = json.loads(form.cleaned_data['context'])
-        print('context------------->',context,type(context))
-        interface = self.model.objects.create(**form.cleaned_data)
+        interface = self.module.objects.create(**form.cleaned_data)
+        # interface = self.module.objects.create(name=name,
+        #                                       description=description,
+        #                                       service_id=service_id,
+        #                                       context=context)
         if not interface:
             return response_failed(code=self.code, message='创建服务失败')
         else:

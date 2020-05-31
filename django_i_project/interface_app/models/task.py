@@ -7,3 +7,7 @@ class Task(models.Model):
     description = models.CharField('描述',blank=False,
                                    max_length=200,
                                    default="")
+
+class TaskInterface(models.Model):
+    task_id = models.IntegerField('任务id',default=0, db_index=True)
+    interface_id = models.IntegerField('接口id',default=0)

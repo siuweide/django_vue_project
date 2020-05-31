@@ -9,3 +9,7 @@ class TaskForm(forms.Form):
                            max_length=200,
                            min_length=1,
                            required=True)
+
+class TaskInterfaceForm(forms.Form):
+    task_id = forms.IntegerField(required=True)
+    interface_id = forms.IntegerField(required=True)

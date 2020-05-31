@@ -5,6 +5,8 @@ class ErrorCode:
     auth = 10001
     service = 10002
     task = 10003
+    task_interface = 10004
+
 
 # 这是一个通用的
 def common_response(success, data, error_code, error_message):
